@@ -21,4 +21,4 @@ RUN chown daemon:daemon /vscode
 
 USER daemon
 
-CMD [ "code", "serve-web"]
+CMD code serve-web --connection-token=$CONNECTION_TOKEN
