@@ -1,8 +1,7 @@
 name: vscode-server
 services:
   app:
-    build:
-      dockerfile: Dockerfile
+    image: ghcr.io/teneff/casaos-vscode:main
     restart: unless-stopped
     environment:
       PUID: $PUID
@@ -19,6 +18,61 @@ services:
         - container: TZ
           description:
             en_us: specify a timezone to use, see this list.
+        - container: FORCE_COLOR
+          description:
+            en_us: when set to 'true', 1, 2, 3, or an empty string causes NO_COLOR and NODE_DISABLE_COLORS to be ignored.
+        - container: NO_COLOR
+          description:
+            en_us: Alias for NODE_DISABLE_COLORS
+        - container: NODE_DEBUG
+          description:
+            en_us: "','-separated list of core modules that should print debug information"
+        - container: NODE_DEBUG_NATIVE
+          description:
+            en_us: "','-separated list of C++ core debug categories that should print debug output"
+        - container: NODE_DISABLE_COLORS
+          description:
+            en_us: set to 1 to disable colors in the REPL
+        - container: NODE_EXTRA_CA_CERTS
+          description:
+            en_us: path to additional CA certificates file. Only read once during process startup.
+        - container: NODE_NO_WARNINGS
+          description:
+            en_us: set to 1 to silence process warnings
+        - container: NODE_PATH
+          description:
+            en_us: "':'-separated list of directories prefixed to the module search path"
+        - container: NODE_PENDING_DEPRECATION
+          description:
+            en_us: set to 1 to emit pending deprecation warnings
+        - container: NODE_PENDING_PIPE_INSTANCES
+          description:
+            en_us: set the number of pending pipe instance handles on Windows
+        - container: NODE_PRESERVE_SYMLINKS
+          description:
+            en_us: set to 1 to preserve symbolic links when resolving and caching modules
+        - container: NODE_REDIRECT_WARNINGS
+          description:
+            en_us: write warnings to path instead of stderr
+        - container: NODE_REPL_EXTERNAL_MODULE
+          description:
+            en_us: path to a Node.js module which will be loaded in place of the built-in REPL
+        - container: NODE_REPL_HISTORY
+          description:
+            en_us: path to the persistent REPL history file
+        - container: NODE_SKIP_PLATFORM_CHECK
+          description:
+            en_us: set to 1 to skip the check for a supported platform during Node.js startup
+        - container: NODE_TLS_REJECT_UNAUTHORIZED
+          description:
+            en_us: set to 0 to disable TLS certificate validation
+        - container: NODE_V8_COVERAGE
+          description:
+            en_us: directory to output v8 coverage JSON to
+        - container: UV_THREADPOOL_SIZE
+          description:
+            en_us: sets the number of threads used in libuv's threadpool
+
     ports:
       - target: 8000
         published: 8000
@@ -27,3 +81,19 @@ services:
       - type: bind
         source: /DATA/AppData/vscode
         target: /vscode
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  description:
+    en_us: The Visual Studio Code Server is a service you can run on a remote development machine, like your desktop PC or a virtual machine (VM). It allows you to securely connect to that remote machine from anywhere through a local VS Code client, without the requirement of SSH.
+  tagline:
+    en_us: The Visual Studio Code Server is a service you can run on a remote development machine, like your desktop PC or a virtual machine (VM). It allows you to securely connect to that remote machine from anywhere through a local VS Code client, without the requirement of SSH.
+  developer: https://github.com/Teneff/casaos-vscode
+  author: Teneff
+  icon: https://raw.githubusercontent.com/main/src/vs/workbench/contrib/welcomeGettingStarted/common/media/dark.png
+  thumbnail: https://raw.githubusercontent.com/main/src/vs/workbench/contrib/welcomeGettingStarted/common/media/dark.png
+  title:
+    en_us: VSCode server
+  category: IDE
