@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-mkdir -p /config/{extensions,data,workspace,.ssh,.vscode-server}
+mkdir -p /config/{extensions,data,workspace,projects,.ssh,.vscode-server}
 
 if [ -n "${SUDO_PASSWORD}" ] || [ -n "${SUDO_PASSWORD_HASH}" ]; then
     echo "setting up sudo access"

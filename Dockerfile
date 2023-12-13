@@ -6,7 +6,7 @@ RUN apt-get update \
 
 # environment settings
 ARG DEBIAN_FRONTEND="noninteractive"
-ENV HOME="/config"
+ENV HOME="/config/projects"
 ENV LANG="en_US.utf8"
 ENV APP_HOST="0.0.0.0"
 ENV APP_PORT="8000"
@@ -27,6 +27,7 @@ RUN apt-get update \
         netcat \
         sudo \
         code \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
     && apt-get clean \
     && rm -rf \
         /config/* \
