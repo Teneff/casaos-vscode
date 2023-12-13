@@ -32,6 +32,7 @@ RUN apt-get update \
         /config/* \
         /tmp/* \
         /var/lib/apt/lists/* \
+        /etc/apt/sources.list.d/projects.list \
         /var/tmp/*
 
 COPY /root /

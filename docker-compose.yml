@@ -1,8 +1,12 @@
-name: vscode-server
+name: vscode
 services:
-  app:
-    image: ghcr.io/teneff/casaos-vscode:main
-    restart: unless-stopped
+  main_app:
+    cpu_shares: 90
+    command: []
+    deploy:
+      resources:
+        limits:
+          memory: 15767M
     environment:
       PUID: $PUID
       PGID: $PGID
@@ -18,85 +22,42 @@ services:
         - container: TZ
           description:
             en_us: specify a timezone to use, see this list.
-        - container: FORCE_COLOR
+        - container: APP_HOST
           description:
-            en_us: when set to 'true', 1, 2, 3, or an empty string causes NO_COLOR and NODE_DISABLE_COLORS to be ignored.
-        - container: NO_COLOR
+            en_us: Host to listen on, defaults to '0.0.0.0'
+        - container: APP_PORT
           description:
-            en_us: Alias for NODE_DISABLE_COLORS
-        - container: NODE_DEBUG
-          description:
-            en_us: "','-separated list of core modules that should print debug information"
-        - container: NODE_DEBUG_NATIVE
-          description:
-            en_us: "','-separated list of C++ core debug categories that should print debug output"
-        - container: NODE_DISABLE_COLORS
-          description:
-            en_us: set to 1 to disable colors in the REPL
-        - container: NODE_EXTRA_CA_CERTS
-          description:
-            en_us: path to additional CA certificates file. Only read once during process startup.
-        - container: NODE_NO_WARNINGS
-          description:
-            en_us: set to 1 to silence process warnings
-        - container: NODE_PATH
-          description:
-            en_us: "':'-separated list of directories prefixed to the module search path"
-        - container: NODE_PENDING_DEPRECATION
-          description:
-            en_us: set to 1 to emit pending deprecation warnings
-        - container: NODE_PENDING_PIPE_INSTANCES
-          description:
-            en_us: set the number of pending pipe instance handles on Windows
-        - container: NODE_PRESERVE_SYMLINKS
-          description:
-            en_us: set to 1 to preserve symbolic links when resolving and caching modules
-        - container: NODE_REDIRECT_WARNINGS
-          description:
-            en_us: write warnings to path instead of stderr
-        - container: NODE_REPL_EXTERNAL_MODULE
-          description:
-            en_us: path to a Node.js module which will be loaded in place of the built-in REPL
-        - container: NODE_REPL_HISTORY
-          description:
-            en_us: path to the persistent REPL history file
-        - container: NODE_SKIP_PLATFORM_CHECK
-          description:
-            en_us: set to 1 to skip the check for a supported platform during Node.js startup
-        - container: NODE_TLS_REJECT_UNAUTHORIZED
-          description:
-            en_us: set to 0 to disable TLS certificate validation
-        - container: NODE_V8_COVERAGE
-          description:
-            en_us: directory to output v8 coverage JSON to
-        - container: UV_THREADPOOL_SIZE
-          description:
-            en_us: sets the number of threads used in libuv's threadpool
-
+            en_us: "Port to listen on. If 0 is passed a random free port is picked [default: 8000]"
+    image: ghcr.io/teneff/casaos-vscode:main
+    labels:
+      icon: https://icon.casaos.io/main/all/casaos-vscode.png
     ports:
       - target: 8000
-        published: 8000
+        published: "8122"
         protocol: tcp
+    restart: unless-stopped
     volumes:
       - type: bind
-        source: /DATA/AppData/vscode/vscode
-        target: /vscode
+        source: /DATA/AppData/$AppID/config
+        target: /config
+    devices: []
+    cap_add: []
+    network_mode: bridge
+    privileged: false
+    container_name: ""
 x-casaos:
-  architectures:
-    - amd64
-    - arm64
-  main: app
-  hostname: ""
-  index: /
-  port_map: "8000"
+  author: Teneff
+  category: IDE
+  hostname: "vscode"
+  icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAABVlBMVEVHcEwAcLMkrvMAe8MAfMIAer8Hg8sjqfIipvIOidIFg8sAcbQAg9AAfcUAfMIjqfIAcbMAcrQFi9UAdLcAcrQAcrYAidIAc7giqPIAjtUAitIAcrQAhtEAcLMAhNAip/EAg80Ah9EAg9AAiNIAhNAAiNIGi9QjqPIfnvAAfcUAhtEmsvMAfs4goe8msvMfnvAAf88Aj9UAebsAcrYAeb0AfMUmsvMAe7wAe8Ualeodn+oAfL0jo/IAhtEjqfIho/Eip/IlsPMAd7kgoPEAidIAbbAAgs8AjdQkrPIkrvMAe7wAhNAAjtQAgc8Adrgms/QjqvIipvEgofEAebsAbrEAg9AAkNUAa68AdLYAi9Mkq/IAdbchpPEgn/AAfM0lsvMAcrUBdssAb7MCec0AdrcAf84AhdElsfQAZ6wDdbwcm+0AdLkhquwDeb8gp+sbmOsBfsYUkt1kR7lhAAAAPHRSTlMA5N1YCT4OHd8ENXnVKRg5w6hI0WkfHkqD5XGXxO3lJ7ODle9m+aWk54Cf5/jxkpLvyPX52Kfy7ufW2vkg6HZJAAADhklEQVRYw6WXWVvaQBSGB5Gwt+wqWwEBN3Cptlb7YEsKLoDQChJwhSDWpVj9/zedSSBkZkJN4vtwyfdyDjk5yQCgAVt6d2r2A9DNzFZp8FLTrzB+KdUfnw9rOhVW33YJCgZ/apCV1fdWrXn7x9JYoF3BLH2F+RKLBNc19KmtLGhQMKGSANtCApFa7bNqxbtPYr7Otu4lgaBYZdTk/bGSTHCdl6jl87Mq8k5XvVQXYTuYIJ+/XlExfl4pLwh+5zFUjF9dgq127p80CoyG+psEvu36WwRw/FiM886joiAQjNsU8tNLRL56zj8+4fkj4X/eaDbngtP0+LE3SoIjDPhFk6OJSAeI8XOzJNUW780ekQLPXFNkw4ONn7vKVgluNkO2KVJgHOXxNpyuKgVr8FnNlGCcbzYrywFp/Oh81WUCwDx1iAMqMpqVDZOQN3lvaEJ+oCQIVzDmkvAWnzG0zkkMPqE/WuAMH8hpphIBY6TTaREKr1gaJTiDUxTDDRVHhGvwSDFm0+0HI8EZDrrgacxwUMndc0VepriJ2KXLoyQATKKNcdAecEIRQ4V3ZjweZstPHHHo4ylc0e7zYhEIqfzJAmANzhOG8iMqAioidmxvkoK90Y2bJA0F2AYsQl6+KNjDGa+eOcLQfubvOLcTqBUAT7SA097ftFNr/z+CGcM+YSik4hoERsMd3ycNhZjqFnyRInfHPVMGh4cUfMcZbc8I3xgacjjzceZ1wbR9k+cbyHA3yJGk0s7XBEyIR0wy5ORtmC2/cITt2RhSRIb7MmWYH+86BYFfyqMSoGFrnhTc3kq7jhY4XY0GZgj5jdFbirBpksBVxICLFw1lmeA2FxXbIAUXAM+7hkvVUaZICW2YLRc4wCDPh0a3vi1MCfZPURu0wGiQlS97sIRPaaJJq9nyDQfdRJzIsPwhgRgtOM4kbLQAPkVQvIhtLjQey/skx/2eI0sLgM3FcbLFKz3eE1S+37t6UBAAv89uUnrBiGeOMfpXvZ6iYOIrTnCdEHSh4ATjlZes5DolONEkAMZoX4YOAfA4CMEPHBWvumPDlS4BHEpJ0EOCSzmLak47/tioACj4i+UvZ1UeOK5ESEF2jVF34mISoqDb7coE2QWP6lMTE8+QgsUFTec261IGdSAJFtc0nxyT62OBjrhw9IWC3sPlg0Xv6dnj6HZfLndh3KpPYLWld3bIX/8HDVWSIvqyEAcAAAAASUVORK5CYII=
   description:
     en_us: The Visual Studio Code Server is a service you can run on a remote development machine, like your desktop PC or a virtual machine (VM). It allows you to securely connect to that remote machine from anywhere through a local VS Code client, without the requirement of SSH.
   tagline:
     en_us: The Visual Studio Code Server is a service you can run on a remote development machine, like your desktop PC or a virtual machine (VM). It allows you to securely connect to that remote machine from anywhere through a local VS Code client, without the requirement of SSH.
   developer: https://github.com/Teneff/casaos-vscode
-  author: Teneff
-  icon: https://raw.githubusercontent.com/main/src/vs/workbench/contrib/welcomeGettingStarted/common/media/dark.png
-  thumbnail: https://raw.githubusercontent.com/main/src/vs/workbench/contrib/welcomeGettingStarted/common/media/dark.png
+  index: /
+  port_map: "8122"
+  scheme: http
+  store_app_id: magical_rodriguez
   title:
-    en_us: VSCode server
-  category: IDE
+    custom: Visual Studio Code
