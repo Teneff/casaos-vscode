@@ -22,6 +22,9 @@ fi
 [[ ! -f /config/.profile ]] && \
     cp /root/.profile /config/.profile
 
+[[ -f /config/.profile ]]
+    . /config/.profile
+
 # fix permissions (ignore contents of /config/workspace)
 find /config -path /config/workspace -prune -o -exec chown abc:abc {} +
 chown abc:abc /config/workspace

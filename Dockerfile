@@ -6,7 +6,7 @@ RUN apt-get update \
 
 # environment settings
 ARG DEBIAN_FRONTEND="noninteractive"
-ENV HOME="/config/projects"
+ENV HOME="/config"
 ENV LANG="en_US.utf8"
 ENV APP_HOST="0.0.0.0"
 ENV APP_PORT="8000"
